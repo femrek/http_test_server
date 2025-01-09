@@ -80,3 +80,11 @@ jobs:
           asset_path: source_code.zip
           asset_name: http_test_server${{ env.package_name }}.zip
           asset_content_type: application/zip
+
+  publish:
+    # check if it is a tag push
+    if: startsWith(github.ref, 'refs/tags/')
+    
+    permissions:
+      id-token: write
+    uses: dart-lang/setup-dart/.github/workflows/publish.yml@v1
