@@ -1,0 +1,82 @@
+name: Dart
+
+on:
+  push:
+    branches: [ "main" ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  # Analyze the source code then run the tests
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@9a04e6d73cca37bd455e0608d7e5092f881fd603
+
+      # Install dependencies for each package
+      - name: Install dependencies for core
+        run: dart pub get --no-example
+
+      # Verify that the libraries are error free
+      - name: Verify formatting for core
+        run: dart format --output=none --set-exit-if-changed lib
+
+      # Analyze the source code
+      - name: Analyze project source for core
+        run: dart analyze lib
+
+      # Run tests
+      - name: Run tests for core
+        run: dart test
+
+  # Create a GitHub release only if it is a tag push
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+
+    # check if it is a tag push
+    if: startsWith(github.ref, 'refs/tags/')
+
+    steps:
+      - name: checkout code
+        uses: actions/checkout@v2
+
+      - name: Generate release zip
+        run: |
+          zip -r source_code.zip .
+
+      - name: Find if it is prerelease by first number of tag
+        id: is_prerelease
+        run: |
+          if [[ ${{ github.ref_name }} == *v0.* ]]; then
+            echo "is_prerelease=true" >> $GITHUB_ENV
+          else
+            echo "is_prerelease=false" >> $GITHUB_ENV
+          fi
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: Release ${{ github.ref_name }}
+          body: |
+            Release ${{ github.ref_name }}
+          draft: false
+          prerelease: ${{ steps.is_prerelease.outputs.is_prerelease }}
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: source_code.zip
+          asset_name: http_test_server${{ env.package_name }}.zip
+          asset_content_type: application/zip
