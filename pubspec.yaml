@@ -1,6 +1,6 @@
 name: http_test_server
 description: "Dart package for testing HTTP requests and responses. Creates a simple HTTP server that responds with a specified response."
-version: 0.0.1
+version: 0.1.0
 homepage: https://github.com/femrek/http_test_server
 
 environment:
