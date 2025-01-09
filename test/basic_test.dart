@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:http_test_server/http_test_server.dart';
 import 'package:test/test.dart';
 
+import 'utils/test_utils.dart';
+
 void main() {
   group('basic tests', () {
     test('basic test with StandardServerEvent', () async {
@@ -17,7 +19,7 @@ void main() {
       ]);
 
       // Send a request to the server
-      final response = await _request('http://localhost:${server.port}');
+      final response = await sendRequest('http://localhost:${server.port}');
 
       // Expect the response
       expect(response, eResponse);
@@ -43,7 +45,7 @@ void main() {
       ]);
 
       // Send a request to the server
-      final response = await _request('http://localhost:${server.port}');
+      final response = await sendRequest('http://localhost:${server.port}');
 
       // Expect the response
       expect(response, eResponse);
@@ -52,14 +54,4 @@ void main() {
       await server.close(force: true);
     });
   });
-}
-
-Future<String> _request(String url) async {
-  final client = HttpClient();
-  final request = await client.getUrl(Uri.parse(url));
-  final responseStream = await request.close();
-  final responseRaw = await responseStream.toList();
-  final responseBytes = responseRaw.expand<int>((e) => e).toList();
-  final response = String.fromCharCodes(responseBytes);
-  return response;
 }
