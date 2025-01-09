@@ -2,6 +2,8 @@
 
 http_test_server provides a simple way to create a test server for testing HTTP requests.
 
+Go to [pub page.](https://pub.dev/packages/http_test_server)
+
 ## Features
 
 - Create an HTTP server in milliseconds.
