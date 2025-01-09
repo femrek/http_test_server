@@ -38,8 +38,7 @@ void main() {
           handler: (request) {
             return request.response
               ..statusCode = HttpStatus.ok
-              ..write(eResponse)
-              ..close();
+              ..write(eResponse);
           },
         ),
       ]);
