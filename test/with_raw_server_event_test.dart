@@ -82,7 +82,8 @@ void main() {
       // ignore: avoid_function_literals_in_foreach_calls parameterized test
     ].forEach((e) {
       test(e.path, () async {
-        final server = await TestServer.createHttpServer(events: [e.event]);
+        final server = await TestServer.createHttpServer();
+        server.events.add(e.event);
 
         // Send a request to the server
         // final response = await sendRequest('http://localhost:${server.port}');
@@ -96,7 +97,7 @@ void main() {
         await e.expects(httpResponse);
 
         // Close the server
-        await server.close(force: true);
+        await server.close();
       });
     });
   });

@@ -11,46 +11,46 @@ void main() {
       // define test values
       const eResponse = 'Hello, world!';
 
-      final server = await TestServer.createHttpServer(events: [
-        StandardServerEvent(
-          matcher: ServerEvent.standardMatcher(paths: ['/']),
-          handler: (request) => eResponse,
-        ),
-      ]);
+      final server = await TestServer.createHttpServer();
+
+      server.events.add(StandardServerEvent(
+        matcher: ServerEvent.standardMatcher(paths: ['/']),
+        handler: (request) => eResponse,
+      ));
 
       // Send a request to the server
-      final response = await sendRequest('http://localhost:${server.port}');
+      final response = await sendRequest(server.url());
 
       // Expect the response
       expect(response, eResponse);
 
       // Close the server
-      await server.close(force: true);
+      await server.close();
     });
 
     test('basic test with RawServerEvent', () async {
       // define test values
       const eResponse = 'Hello, world!';
 
-      final server = await TestServer.createHttpServer(events: [
-        RawServerEvent(
-          matcher: ServerEvent.standardMatcher(paths: ['/']),
-          handler: (request) {
-            return request.response
-              ..statusCode = HttpStatus.ok
-              ..write(eResponse);
-          },
-        ),
-      ]);
+      final server = await TestServer.createHttpServer();
+
+      server.events.add(RawServerEvent(
+        matcher: ServerEvent.standardMatcher(paths: ['/']),
+        handler: (request) {
+          return request.response
+            ..statusCode = HttpStatus.ok
+            ..write(eResponse);
+        },
+      ));
 
       // Send a request to the server
-      final response = await sendRequest('http://localhost:${server.port}');
+      final response = await sendRequest(server.url());
 
       // Expect the response
       expect(response, eResponse);
 
       // Close the server
-      await server.close(force: true);
+      await server.close();
     });
   });
 }
