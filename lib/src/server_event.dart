@@ -16,7 +16,8 @@ typedef RequestHandler = Future<HttpResponse> Function(HttpRequest request);
 ///
 /// The function should return a [String] that will be written to the response
 /// body.
-typedef RequestHandlerRespondsString = Future<String> Function(HttpRequest request);
+typedef RequestHandlerRespondsString = Future<String> Function(
+    HttpRequest request);
 
 /// A base class to define a handler for a request comes to server.
 ///
