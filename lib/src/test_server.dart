@@ -85,7 +85,7 @@ final class TestServer {
   }
 
   void _startToListen() {
-    server.listen((request) {
+    server.listen((request) async {
       final matches = _events.where(
         (event) => event.matcher(request),
       );
@@ -110,15 +110,15 @@ final class TestServer {
       }
 
       // Process the request
-      if (event is StandardServerEvent) {
-        request.response
-          ..statusCode = event.responseStatusCode
-          ..write(event.handler(request))
-          ..close();
-      } else if (event is RawServerEvent) {
-        event.handler(request).close();
-      } else {
-        throw UnimplementedError('event type not implemented');
+      switch (event) {
+        case StandardServerEvent():
+          request.response
+            ..statusCode = event.responseStatusCode
+            ..write(await event.handler(request))
+            ..close();
+        case RawServerEvent():
+          final response = await event.handler(request);
+          response.close();
       }
     });
   }

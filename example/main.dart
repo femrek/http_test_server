@@ -12,7 +12,7 @@ void main() {
     final server = await TestServer.createHttpServer(events: [
       StandardServerEvent(
         matcher: ServerEvent.standardMatcher(paths: ['/']),
-        handler: (request) => '{"message": "$message"}',
+        handler: (request) async => '{"message": "$message"}',
       ),
     ]);
     final url = 'http://localhost:${server.port}';

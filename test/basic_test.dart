@@ -15,7 +15,7 @@ void main() {
 
       server.events.add(StandardServerEvent(
         matcher: ServerEvent.standardMatcher(paths: ['/']),
-        handler: (request) => eResponse,
+        handler: (request) async => eResponse,
       ));
 
       // Send a request to the server
@@ -36,7 +36,7 @@ void main() {
 
       server.events.add(RawServerEvent(
         matcher: ServerEvent.standardMatcher(paths: ['/']),
-        handler: (request) {
+        handler: (request) async {
           return request.response
             ..statusCode = HttpStatus.ok
             ..write(eResponse);

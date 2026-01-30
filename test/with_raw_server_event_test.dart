@@ -12,7 +12,7 @@ void main() {
         '/basic',
         RawServerEvent(
           matcher: ServerEvent.standardMatcher(paths: ['/basic']),
-          handler: (request) {
+          handler: (request) async {
             return request.response
               ..statusCode = HttpStatus.ok
               ..write('Hello, world!');
@@ -32,7 +32,7 @@ void main() {
         '/custom_not_found',
         RawServerEvent(
           matcher: ServerEvent.standardMatcher(paths: ['/custom_not_found']),
-          handler: (req) {
+          handler: (req) async {
             return req.response
               ..statusCode = HttpStatus.notFound
               ..write('Not Found');
@@ -52,7 +52,7 @@ void main() {
         '/redirect',
         RawServerEvent(
           matcher: ServerEvent.standardMatcher(paths: ['/redirect', '/']),
-          handler: (req) {
+          handler: (req) async {
             if (req.uri.path == '/redirect') {
               return req.response
                 ..statusCode = HttpStatus.movedTemporarily
